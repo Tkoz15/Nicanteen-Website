@@ -47,9 +47,9 @@ export default function About() {
 
         <div className="mx-auto max-w-2xl text-center">
           <p className="text-muted-foreground">
-            Nicanteen isn't just a product – it's a solution. We noticed that nicotine pouch users were stuck 
-            with inconvenient storage options that didn't fit well in pockets or looked unprofessional. 
-            That's why we created Nicanteen: a sleek, pocket-friendly carrier that keeps your pouches fresh 
+            Nicanteen isn&apos;t just a product – it&apos;s a solution. We noticed that nicotine pouch users were stuck
+            with inconvenient storage options that didn&apos;t fit well in pockets or looked unprofessional.
+            That&apos;s why we created Nicanteen: a sleek, pocket-friendly carrier that keeps your pouches fresh
             and accessible while maintaining a discreet profile.
           </p>
         </div>

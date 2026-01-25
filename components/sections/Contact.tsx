@@ -67,7 +67,7 @@ export default function Contact() {
             Get in Touch
           </h2>
           <p className="text-lg text-muted-foreground">
-            Have questions about Nicanteen? We'd love to hear from you.
+            Have questions about Nicanteen? We&apos;d love to hear from you.
           </p>
         </div>
 
@@ -129,7 +129,7 @@ export default function Contact() {
 
               {submitStatus === "success" && (
                 <p className="text-sm text-green-600 text-center">
-                  Thanks for reaching out! We'll get back to you soon.
+                  Thanks for reaching out! We&apos;ll get back to you soon.
                 </p>
               )}
 

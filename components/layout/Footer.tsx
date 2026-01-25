@@ -39,7 +39,7 @@ export default function Footer() {
           <div className="space-y-4">
             <h4 className="font-semibold">Get in Touch</h4>
             <p className="text-sm text-gray-400">
-              Have questions? We'd love to hear from you.
+              Have questions? We&apos;d love to hear from you.
             </p>
             <Link href="#contact" className="text-brand-green hover:underline text-sm">
               Contact Us →

@@ -7,6 +7,7 @@ export function MobileMenu() {
   const [isOpen, setIsOpen] = useState(false)
 
   const navLinks = [
+    { href: '#video', label: 'Watch' },
     { href: '#features', label: 'Features' },
     { href: '#product', label: 'Product' },
     { href: '#about', label: 'About' },

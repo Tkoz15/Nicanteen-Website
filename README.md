@@ -1,30 +1,31 @@
 # Nicanteen - Premium Pouch Carrier Website
 
-A modern, responsive website for Nicanteen - the ultimate carrier for nicotine pouches. Built with Next.js 14, TypeScript, Tailwind CSS, shadcn/ui, and Supabase.
+A modern, responsive website for Nicanteen - the ultimate carrier for nicotine pouches. Built with Next.js 15, TypeScript, Tailwind CSS, and shadcn/ui.
 
 ## Features
 
-- 🎨 Modern, responsive design with black and green branding
-- 🚀 Built with Next.js 14 App Router
-- 💎 Styled with Tailwind CSS and shadcn/ui components
-- 📱 Mobile-first responsive design
-- 🛒 Shopify integration for purchases
-- 📬 Contact form with Supabase backend
-- 🔍 SEO optimized
+- Modern, responsive design with black and green branding
+- Built with Next.js 15 App Router
+- Styled with Tailwind CSS and shadcn/ui components
+- Mobile-first responsive design with hamburger menu
+- Video section for advertising content
+- Shopify integration for purchases
+- Contact form with email notifications via Resend
+- SEO optimized
 
 ## Getting Started
 
 ### Prerequisites
 
 - Node.js 18+ installed
-- A Supabase account (free tier works)
+- A Resend account for email (free tier available at https://resend.com)
 - A Shopify store (for the "Buy Now" functionality)
 
 ### Installation
 
 1. Navigate to the project directory:
 ```bash
-cd C:\Users\VinSpo\Projects\Nicanteen\nicanteen
+cd nicanteen
 ```
 
 2. Install dependencies:
@@ -34,24 +35,26 @@ npm install
 
 3. Set up environment variables:
    - Copy `.env.local.example` to `.env.local`
-   - Fill in your Supabase and Shopify credentials
+   - Fill in your credentials
 
-### Supabase Setup
+### Environment Variables
 
-1. Create a new Supabase project at https://supabase.com
+```env
+# Shopify Store URL
+NEXT_PUBLIC_SHOPIFY_URL=https://your-shopify-store.myshopify.com
 
-2. Create a table for contact form submissions:
-```sql
-CREATE TABLE contact_submissions (
-  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  name TEXT NOT NULL,
-  email TEXT NOT NULL,
-  message TEXT NOT NULL,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
+# Resend Email API Key (required for contact form)
+RESEND_API_KEY=re_your_api_key_here
 ```
 
-3. Copy your project URL and anon key to `.env.local`
+### Resend Setup (for Contact Form)
+
+1. Create a free account at https://resend.com
+2. Get your API key from the Resend dashboard
+3. Add the API key to your `.env.local` file
+4. Contact form submissions will be sent to nicanteenllc@gmail.com
+
+**Note:** On the free tier, emails are sent from `onboarding@resend.dev`. To send from your own domain, you'll need to verify a domain in Resend.
 
 ### Running the Development Server
 
@@ -61,22 +64,37 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000) to view the website.
 
+## Adding Your Content
+
+### Video
+Add your advertising video to the `/public` folder:
+- Place your video at `/public/video.mp4`
+- (Optional) Add a thumbnail at `/public/video-thumbnail.jpg`
+- Uncomment the video element in `app/page.tsx` (around line 132)
+
+### Product Images
+Add product photos to the `/public` folder:
+- Recommended size: 800x800px
+- Formats: PNG or JPG
+- Update the product section in `app/page.tsx` to use your images
+
 ## Project Structure
 
 ```
 nicanteen/
 ├── app/
-│   ├── layout.tsx      # Root layout with metadata
-│   ├── page.tsx        # Home page
-│   └── globals.css     # Global styles with Tailwind
+│   ├── api/
+│   │   └── contact/     # Contact form API endpoint
+│   ├── layout.tsx       # Root layout with metadata
+│   ├── page.tsx         # Home page
+│   └── globals.css      # Global styles with Tailwind
 ├── components/
-│   ├── ui/            # shadcn/ui components
-│   ├── layout/        # Header and Footer
-│   └── sections/      # Page sections (Hero, Features, etc.)
+│   ├── ui/              # shadcn/ui components
+│   ├── layout/          # Header, Footer, Mobile Menu
+│   └── sections/        # Page sections
 ├── lib/
-│   ├── utils.ts       # Utility functions
-│   └── supabase/      # Supabase client configuration
-└── public/            # Static assets
+│   └── utils.ts         # Utility functions
+└── public/              # Static assets (images, video)
 ```
 
 ## Customization
@@ -85,7 +103,7 @@ nicanteen/
 The brand colors (black and green) are defined in `app/globals.css`. You can modify the CSS variables to change the color scheme.
 
 ### Content
-All text content is in the component files under `components/sections/`. Simply edit the text in these files to update the website content.
+The main page content is in `app/page.tsx`. Edit the text directly to update the website content.
 
 ### Shopify Integration
 Update the `NEXT_PUBLIC_SHOPIFY_URL` in your `.env.local` file with your actual Shopify store URL.
@@ -96,9 +114,11 @@ This project is ready to deploy on Vercel:
 
 1. Push your code to GitHub
 2. Import the project on Vercel
-3. Add your environment variables in Vercel's dashboard
+3. Add your environment variables in Vercel's dashboard:
+   - `NEXT_PUBLIC_SHOPIFY_URL`
+   - `RESEND_API_KEY`
 4. Deploy!
 
 ## License
 
-All rights reserved - Nicanteen 2024
+All rights reserved - Nicanteen 2025
