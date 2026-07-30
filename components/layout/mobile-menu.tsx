@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { X, Menu } from 'lucide-react'
+import { buyNowUrl } from '@/lib/shopify'
 
 export function MobileMenu() {
   const [isOpen, setIsOpen] = useState(false)
@@ -63,7 +64,7 @@ export function MobileMenu() {
               <button 
                 className="w-full px-4 py-3 text-white rounded-md bg-brand-gradient font-medium"
                 onClick={() => {
-                  window.open(process.env.NEXT_PUBLIC_SHOPIFY_URL || '#', '_blank')
+                  window.open(buyNowUrl(), '_blank')
                   setIsOpen(false)
                 }}
               >

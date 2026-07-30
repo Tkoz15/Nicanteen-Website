@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { MobileMenu } from '@/components/layout/mobile-menu'
+import { buyNowUrl } from '@/lib/shopify'
 
 export default function Home() {
   const [formData, setFormData] = useState({ name: '', email: '', message: '' })
@@ -51,7 +52,7 @@ export default function Home() {
             <button
               className="hidden md:block px-4 py-2 text-white rounded-md"
               style={{ background: 'linear-gradient(to right, #16a34a, #4ade80)' }}
-              onClick={() => window.open(process.env.NEXT_PUBLIC_SHOPIFY_URL || '#', '_blank')}
+              onClick={() => window.open(buyNowUrl(), '_blank')}
             >
               Shop Now
             </button>
@@ -81,7 +82,7 @@ export default function Home() {
             <button
               className="px-6 py-3 text-white rounded-md font-medium"
               style={{ background: 'linear-gradient(to right, #16a34a, #4ade80)' }}
-              onClick={() => window.open(process.env.NEXT_PUBLIC_SHOPIFY_URL || '#', '_blank')}
+              onClick={() => window.open(buyNowUrl(), '_blank')}
             >
               Shop Now →
             </button>
@@ -234,7 +235,7 @@ export default function Home() {
               <button
                 className="px-6 py-3 text-white rounded-md font-medium flex items-center gap-2"
                 style={{ background: 'linear-gradient(to right, #16a34a, #4ade80)' }}
-                onClick={() => window.open(process.env.NEXT_PUBLIC_SHOPIFY_URL || '#', '_blank')}
+                onClick={() => window.open(buyNowUrl(), '_blank')}
               >
                 🛒 Buy Now on Shopify
               </button>
