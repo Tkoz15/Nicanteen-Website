@@ -1,8 +1,49 @@
 'use client'
 
-import { useState } from 'react'
-import Link from 'next/link'
+import { useEffect, useRef, useState } from 'react'
+import Image from 'next/image'
 import { MobileMenu } from '@/components/layout/mobile-menu'
+import { buyNowUrl } from '@/lib/shopify'
+
+const ACCENT = '#22c55e'
+
+/** Fade/rise in when scrolled into view. */
+function Reveal({ children, className = '' }: { children: React.ReactNode; className?: string }) {
+  const ref = useRef<HTMLDivElement>(null)
+  const [shown, setShown] = useState(false)
+  useEffect(() => {
+    const el = ref.current
+    if (!el) return
+    const io = new IntersectionObserver(
+      ([e]) => {
+        if (e.isIntersecting) {
+          setShown(true)
+          io.disconnect()
+        }
+      },
+      { threshold: 0.15 }
+    )
+    io.observe(el)
+    return () => io.disconnect()
+  }, [])
+  return (
+    <div
+      ref={ref}
+      className={className}
+      style={{
+        opacity: shown ? 1 : 0,
+        transform: shown ? 'none' : 'translateY(28px)',
+        transition: 'opacity 900ms cubic-bezier(.16,1,.3,1), transform 900ms cubic-bezier(.16,1,.3,1)',
+      }}
+    >
+      {children}
+    </div>
+  )
+}
+
+function shop() {
+  window.open(buyNowUrl(), '_blank')
+}
 
 export default function Home() {
   const [formData, setFormData] = useState({ name: '', email: '', message: '' })
@@ -31,381 +72,267 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-black text-white font-sans antialiased">
       {/* Header */}
-      <header className="sticky top-0 z-50 w-full border-b bg-white">
-        <div className="container mx-auto px-4 flex h-16 items-center justify-between">
-          <Link href="/" className="text-2xl font-bold" style={{ color: '#16a34a' }}>
-            Nicanteen
-          </Link>
-
-          <nav className="hidden md:flex items-center gap-6">
-            <a href="#video" className="text-sm font-medium hover:text-green-600">Watch</a>
-            <a href="#features" className="text-sm font-medium hover:text-green-600">Features</a>
-            <a href="#product" className="text-sm font-medium hover:text-green-600">Product</a>
-            <a href="#about" className="text-sm font-medium hover:text-green-600">About</a>
-            <a href="#contact" className="text-sm font-medium hover:text-green-600">Contact</a>
+      <header className="fixed top-0 z-50 w-full border-b border-white/5 bg-black/60 backdrop-blur">
+        <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
+          <span className="text-sm font-semibold uppercase tracking-[0.4em]">Nicanteen</span>
+          <nav className="hidden gap-8 text-xs uppercase tracking-widest text-neutral-400 md:flex">
+            <a href="#problem" className="hover:text-white">The Problem</a>
+            <a href="#object" className="hover:text-white">The Object</a>
+            <a href="#spec" className="hover:text-white">Spec</a>
+            <a href="#contact" className="hover:text-white">Contact</a>
           </nav>
-
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
             <button
-              className="hidden md:block px-4 py-2 text-white rounded-md"
-              style={{ background: 'linear-gradient(to right, #16a34a, #4ade80)' }}
-              onClick={() => window.open(process.env.NEXT_PUBLIC_SHOPIFY_URL || '#', '_blank')}
+              onClick={shop}
+              className="hidden rounded-full border border-white/20 px-5 py-2 text-xs uppercase tracking-widest transition-colors hover:border-white hover:bg-white hover:text-black md:block"
             >
-              Shop Now
+              Shop · $13
             </button>
             <MobileMenu />
           </div>
         </div>
       </header>
 
-      {/* Hero Section */}
-      <section className="py-20 px-4 text-center bg-gray-50">
-        <div className="container mx-auto max-w-3xl">
-          <div className="mb-6 inline-flex items-center rounded-full bg-green-100 px-4 py-2 text-sm font-medium text-green-800">
-            <span className="mr-2">📦</span> Premium Pouch Carrier
-          </div>
+      {/* Hero */}
+      <section className="relative flex min-h-screen items-center justify-center overflow-hidden">
+        <Image
+          src="/product/case-4.jpg"
+          alt="Nicanteen matte-black pouch carrier"
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover opacity-60"
+          style={{ objectPosition: '60% 40%' }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/30 to-black" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_35%,black_90%)]" />
 
-          <h1 className="mb-6 text-4xl md:text-5xl font-bold">
-            The Perfect Carrier for Your
-            <span style={{ color: '#16a34a' }}> Nicotine Pouches</span>
-          </h1>
-
-          <p className="mb-10 text-lg text-gray-600">
-            Discreet, attractive, and designed to fit perfectly in your pocket.
-            Keep your pouches fresh and accessible with Nicanteen.
+        <div className="relative z-10 px-6 text-center">
+          <p className="mb-6 text-[11px] uppercase tracking-[0.5em] text-neutral-400">
+            A carrier for nicotine pouches
           </p>
-
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <h1 className="text-5xl font-semibold leading-[0.95] tracking-tight md:text-8xl">
+            The pouch case
+            <br />
+            <span className="text-neutral-500">nobody notices.</span>
+          </h1>
+          <p className="mx-auto mt-8 max-w-md text-sm leading-relaxed text-neutral-300">
+            Matte. Slim. Silent. Nicanteen disappears into any pocket — and looks like
+            nothing you’d ever have to explain.
+          </p>
+          <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
             <button
-              className="px-6 py-3 text-white rounded-md font-medium"
-              style={{ background: 'linear-gradient(to right, #16a34a, #4ade80)' }}
-              onClick={() => window.open(process.env.NEXT_PUBLIC_SHOPIFY_URL || '#', '_blank')}
+              onClick={shop}
+              className="rounded-full bg-white px-8 py-3 text-sm font-medium text-black transition-transform hover:scale-[1.03]"
             >
-              Shop Now →
+              Carry one — $13
             </button>
-            <a
-              href="#video"
-              className="px-6 py-3 border border-gray-300 rounded-md font-medium hover:bg-gray-50 flex items-center justify-center gap-2"
-            >
-              <span>▶</span> Watch Video
+            <a href="#object" className="text-sm text-neutral-400 underline-offset-4 hover:text-white hover:underline">
+              See the object
             </a>
           </div>
+        </div>
 
-          <div className="mt-12 flex flex-wrap justify-center gap-6 text-sm text-gray-600">
-            <div className="flex items-center gap-2">
-              <span style={{ color: '#16a34a' }}>✓</span> Premium Quality
-            </div>
-            <div className="flex items-center gap-2">
-              <span style={{ color: '#16a34a' }}>✓</span> Pocket-Friendly Design
-            </div>
-            <div className="flex items-center gap-2">
-              <span style={{ color: '#16a34a' }}>✓</span> Multiple Colors
-            </div>
-          </div>
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 text-[10px] uppercase tracking-[0.4em] text-neutral-500">
+          Scroll
         </div>
       </section>
 
-      {/* Video Section */}
-      <section id="video" className="py-20 px-4 bg-black">
-        <div className="container mx-auto max-w-4xl">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4 text-white">
-              See <span style={{ color: '#4ade80' }}>Nicanteen</span> in Action
-            </h2>
-            <p className="text-lg text-gray-400">
-              Discover how Nicanteen makes carrying your pouches effortless.
+      {/* Problem */}
+      <section id="problem" className="border-t border-white/5 px-6 py-32">
+        <div className="mx-auto max-w-3xl">
+          <Reveal>
+            <p className="text-xs uppercase tracking-[0.4em]" style={{ color: ACCENT }}>
+              The problem
             </p>
-          </div>
-
-          {/* Video Container - Replace with your video */}
-          <div className="relative aspect-video bg-gray-900 rounded-2xl overflow-hidden shadow-2xl">
-            {/* Placeholder for video - replace src with your video file or embed */}
-            <div className="absolute inset-0 flex flex-col items-center justify-center text-gray-500">
-              <div className="w-20 h-20 rounded-full bg-green-600 flex items-center justify-center mb-4 cursor-pointer hover:bg-green-500 transition-colors">
-                <span className="text-white text-3xl ml-1">▶</span>
-              </div>
-              <p className="text-gray-400 text-lg">Video Coming Soon</p>
-              <p className="text-gray-500 text-sm mt-2">Add your video file to /public/video.mp4</p>
-            </div>
-
-            {/*
-              To add your video, uncomment this and add your video file:
-              <video
-                controls
-                className="w-full h-full object-cover"
-                poster="/video-thumbnail.jpg"
-              >
-                <source src="/video.mp4" type="video/mp4" />
-                Your browser does not support the video tag.
-              </video>
-            */}
-          </div>
-        </div>
-      </section>
-
-      {/* Features Section */}
-      <section id="features" className="py-20 px-4">
-        <div className="container mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4">
-              Why Choose <span style={{ color: '#16a34a' }}>Nicanteen</span>?
+            <h2 className="mt-6 text-3xl font-light leading-snug md:text-5xl">
+              A branded tin is a{' '}
+              <span className="font-semibold">billboard</span>. Loose pouches get{' '}
+              <span className="font-semibold">crushed</span>. A plastic bag looks like{' '}
+              <span className="text-neutral-500">something you’d hide</span>.
             </h2>
-            <p className="text-lg text-gray-600">
-              Designed with convenience and style in mind for modern pouch users.
+            <p className="mt-8 max-w-xl text-neutral-400">
+              You shouldn’t have to choose between discretion and dignity. Nicanteen is the
+              quiet answer — a precise little object that keeps twenty pouches fresh and out of sight.
             </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {[
-              { icon: '👌', title: 'Pocket-Perfect Design', desc: 'Slim profile that fits seamlessly in any pocket without bulging.' },
-              { icon: '🛡️', title: 'Durable Protection', desc: 'High-quality plastic construction keeps your pouches safe and fresh.' },
-              { icon: '🎨', title: 'Multiple Colors', desc: 'Choose from various colors to match your style and preference.' },
-              { icon: '✨', title: 'Discreet & Stylish', desc: 'Sleek design that looks great while keeping your pouches private.' }
-            ].map((feature, i) => (
-              <div key={i} className="bg-white border rounded-lg p-6 hover:shadow-lg transition-shadow">
-                <div className="text-3xl mb-4">{feature.icon}</div>
-                <h3 className="font-semibold mb-2">{feature.title}</h3>
-                <p className="text-sm text-gray-600">{feature.desc}</p>
-              </div>
-            ))}
-          </div>
+          </Reveal>
         </div>
       </section>
 
-      {/* Product Section */}
-      <section id="product" className="py-20 px-4 bg-gray-50">
-        <div className="container mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            {/* Product Image Placeholder */}
-            <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-2xl aspect-square flex items-center justify-center p-8 relative overflow-hidden">
-              {/* Decorative elements */}
-              <div className="absolute top-0 right-0 w-64 h-64 bg-green-500 opacity-10 rounded-full blur-3xl"></div>
-              <div className="absolute bottom-0 left-0 w-48 h-48 bg-green-400 opacity-10 rounded-full blur-3xl"></div>
-
-              <div className="text-center z-10">
-                {/* Stylized product representation */}
-                <div className="relative mx-auto mb-6">
-                  <div className="w-48 h-32 bg-gradient-to-br from-gray-700 to-black rounded-xl shadow-2xl transform rotate-3 border border-gray-600"></div>
-                  <div className="absolute inset-0 w-48 h-32 bg-gradient-to-br from-green-600 to-green-500 rounded-xl shadow-2xl transform -rotate-3 opacity-50"></div>
-                </div>
-                <p className="text-green-400 font-medium">Add your product images to /public/</p>
-                <p className="text-gray-500 text-sm mt-1">Recommended: 800x800px PNG or JPG</p>
-              </div>
-            </div>
-
-            <div className="space-y-6">
-              <h2 className="text-3xl font-bold">Nicanteen Pouch Carrier</h2>
-              <p className="text-lg text-gray-600">
-                The ultimate accessory for nicotine pouch users. Our premium carrier keeps your pouches organized,
-                fresh, and easily accessible wherever you go.
+      {/* The Object — split */}
+      <section id="object" className="border-t border-white/5">
+        <div className="grid md:grid-cols-2">
+          <div className="relative aspect-square md:aspect-auto md:min-h-[70vh]">
+            <Image
+              src="/product/case-2.jpg"
+              alt="Nicanteen carrier, open"
+              fill
+              sizes="(max-width: 768px) 100vw, 50vw"
+              className="object-cover"
+              style={{ objectPosition: 'center' }}
+            />
+          </div>
+          <div className="flex items-center px-6 py-20 md:px-16">
+            <Reveal>
+              <p className="text-xs uppercase tracking-[0.4em]" style={{ color: ACCENT }}>
+                The object
               </p>
+              <h2 className="mt-6 text-4xl font-semibold tracking-tight md:text-5xl">
+                One hand. One click. Done.
+              </h2>
+              <p className="mt-6 max-w-md text-neutral-400">
+                A satisfying snap-lock flip top opens with a thumb and shuts flush. The embossed
+                monogram is the only marking — no loud branding, no tell.
+              </p>
+              <ul className="mt-10 space-y-4 text-sm">
+                {[
+                  'Flip-top snap closure — one-handed',
+                  'Keeps pouches fresh and uncrushed',
+                  'Embossed monogram, matte finish',
+                  '~10 mm slim — pocket-flat',
+                ].map((t) => (
+                  <li key={t} className="flex items-center gap-3 text-neutral-300">
+                    <span className="h-1 w-1 rounded-full" style={{ background: ACCENT }} />
+                    {t}
+                  </li>
+                ))}
+              </ul>
+            </Reveal>
+          </div>
+        </div>
+      </section>
+
+      {/* Spec strip */}
+      <section id="spec" className="border-t border-white/5 px-6 py-24">
+        <div className="mx-auto grid max-w-5xl grid-cols-2 gap-y-12 text-center md:grid-cols-4">
+          {[
+            ['~10 mm', 'Slim profile'],
+            ['~20', 'Pouches held'],
+            ['1', 'Silent monogram'],
+            ['$13', 'Free shipping'],
+          ].map(([big, small]) => (
+            <Reveal key={small}>
+              <div className="text-4xl font-semibold md:text-6xl">{big}</div>
+              <div className="mt-3 text-xs uppercase tracking-[0.3em] text-neutral-500">{small}</div>
+            </Reveal>
+          ))}
+        </div>
+      </section>
+
+      {/* Closing CTA */}
+      <section className="relative overflow-hidden border-t border-white/5 px-6 py-40 text-center">
+        <Image src="/product/case-3.jpg" alt="" fill sizes="100vw" className="object-cover opacity-25" />
+        <div className="absolute inset-0 bg-black/60" />
+        <Reveal className="relative z-10">
+          <h2 className="text-4xl font-semibold tracking-tight md:text-7xl">Carry quietly.</h2>
+          <p className="mx-auto mt-6 max-w-md text-neutral-400">
+            Precision-molded, BPA-free, and built to vanish into your day.
+          </p>
+          <button
+            onClick={shop}
+            className="mt-10 rounded-full bg-white px-10 py-4 text-sm font-medium text-black transition-transform hover:scale-[1.03]"
+          >
+            Get Nicanteen — $13
+          </button>
+        </Reveal>
+      </section>
+
+      {/* Contact */}
+      <section id="contact" className="border-t border-white/5 px-6 py-28">
+        <div className="mx-auto max-w-xl">
+          <Reveal>
+            <div className="text-center">
+              <p className="text-xs uppercase tracking-[0.4em]" style={{ color: ACCENT }}>
+                Get in touch
+              </p>
+              <h2 className="mt-6 text-3xl font-semibold tracking-tight md:text-4xl">
+                Questions? Say hello.
+              </h2>
+              <p className="mt-4 text-sm text-neutral-400">
+                We usually respond within 24 hours.
+              </p>
+            </div>
+
+            <form onSubmit={handleSubmit} className="mt-10 space-y-5">
+              {formStatus === 'success' && (
+                <div className="rounded-lg border border-green-500/40 bg-green-500/10 px-4 py-3 text-sm text-green-300">
+                  Thank you — your message is on its way. We’ll be in touch soon.
+                </div>
+              )}
+              {formStatus === 'error' && (
+                <div className="rounded-lg border border-red-500/40 bg-red-500/10 px-4 py-3 text-sm text-red-300">
+                  Something went wrong. Please try again or email us directly.
+                </div>
+              )}
 
               <div>
-                <h3 className="font-medium mb-3">Choose Your Color</h3>
-                <div className="flex gap-3">
-                  <button className="w-12 h-12 bg-black rounded-full border-2 border-green-500 hover:scale-110 transition-transform" title="Black"></button>
-                  <button className="w-12 h-12 bg-green-500 rounded-full hover:scale-110 transition-transform" title="Green"></button>
-                  <button className="w-12 h-12 bg-gray-500 rounded-full hover:scale-110 transition-transform" title="Gray"></button>
-                  <button className="w-12 h-12 bg-white rounded-full border-2 border-gray-300 hover:scale-110 transition-transform" title="White"></button>
-                </div>
+                <label className="mb-2 block text-xs uppercase tracking-widest text-neutral-400">Name</label>
+                <input
+                  type="text"
+                  required
+                  value={formData.name}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  className="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-white placeholder-neutral-500 outline-none transition-colors focus:border-white/40"
+                  placeholder="Your name"
+                />
               </div>
 
-              <div className="space-y-2">
-                <div className="flex items-start gap-2">
-                  <span style={{ color: '#16a34a' }}>✓</span>
-                  <span className="text-sm">Holds up to 20 pouches securely</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <span style={{ color: '#16a34a' }}>✓</span>
-                  <span className="text-sm">Snap-lock closure keeps contents fresh</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <span style={{ color: '#16a34a' }}>✓</span>
-                  <span className="text-sm">Slim 10mm profile fits any pocket</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <span style={{ color: '#16a34a' }}>✓</span>
-                  <span className="text-sm">Made from durable, BPA-free plastic</span>
-                </div>
+              <div>
+                <label className="mb-2 block text-xs uppercase tracking-widest text-neutral-400">Email</label>
+                <input
+                  type="email"
+                  required
+                  value={formData.email}
+                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  className="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-white placeholder-neutral-500 outline-none transition-colors focus:border-white/40"
+                  placeholder="your@email.com"
+                />
+              </div>
+
+              <div>
+                <label className="mb-2 block text-xs uppercase tracking-widest text-neutral-400">Message</label>
+                <textarea
+                  rows={4}
+                  required
+                  value={formData.message}
+                  onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                  className="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-white placeholder-neutral-500 outline-none transition-colors focus:border-white/40"
+                  placeholder="Tell us what’s on your mind…"
+                />
               </div>
 
               <button
-                className="px-6 py-3 text-white rounded-md font-medium flex items-center gap-2"
-                style={{ background: 'linear-gradient(to right, #16a34a, #4ade80)' }}
-                onClick={() => window.open(process.env.NEXT_PUBLIC_SHOPIFY_URL || '#', '_blank')}
+                type="submit"
+                disabled={formStatus === 'sending'}
+                className="w-full rounded-full bg-white px-6 py-3.5 text-sm font-medium text-black transition-transform hover:scale-[1.02] disabled:opacity-50"
               >
-                🛒 Buy Now on Shopify
+                {formStatus === 'sending' ? 'Sending…' : 'Send message'}
               </button>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* About Section */}
-      <section id="about" className="py-20 px-4">
-        <div className="container mx-auto text-center max-w-3xl">
-          <h2 className="text-3xl font-bold mb-4">About Nicanteen</h2>
-          <p className="text-lg text-gray-600 mb-12">
-            Born from a simple idea: pouch users deserve better than plastic bags and tins.
-          </p>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
-            <div>
-              <div className="text-3xl mb-4">💡</div>
-              <h3 className="font-semibold mb-2">Innovation</h3>
-              <p className="text-gray-600">Designed from the ground up to solve real problems for pouch users.</p>
-            </div>
-            <div>
-              <div className="text-3xl mb-4">👥</div>
-              <h3 className="font-semibold mb-2">Community</h3>
-              <p className="text-gray-600">Built by pouch users, for pouch users. We understand your needs.</p>
-            </div>
-            <div>
-              <div className="text-3xl mb-4">🎯</div>
-              <h3 className="font-semibold mb-2">Purpose</h3>
-              <p className="text-gray-600">Making your daily carry more convenient, discreet, and stylish.</p>
-            </div>
-          </div>
-
-          <p className="text-gray-600">
-            Nicanteen isn&apos;t just a product – it&apos;s a solution. We noticed that nicotine pouch users were stuck
-            with inconvenient storage options that didn&apos;t fit well in pockets or looked unprofessional.
-            That&apos;s why we created Nicanteen: a sleek, pocket-friendly carrier that keeps your pouches fresh
-            and accessible while maintaining a discreet profile.
-          </p>
-        </div>
-      </section>
-
-      {/* Contact Section */}
-      <section id="contact" className="py-20 px-4 bg-gray-50">
-        <div className="container mx-auto max-w-xl">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4">Get in Touch</h2>
-            <p className="text-lg text-gray-600">
-              Have questions about Nicanteen? We&apos;d love to hear from you.
-            </p>
-          </div>
-
-          <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-lg p-8 space-y-6">
-            {formStatus === 'success' && (
-              <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded">
-                Thank you for your message! We&apos;ll get back to you soon.
-              </div>
-            )}
-
-            {formStatus === 'error' && (
-              <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
-                Something went wrong. Please try again or email us directly.
-              </div>
-            )}
-
-            <div>
-              <label className="block text-sm font-medium mb-2">Name</label>
-              <input
-                type="text"
-                required
-                value={formData.name}
-                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                placeholder="Your name"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium mb-2">Email</label>
-              <input
-                type="email"
-                required
-                value={formData.email}
-                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                placeholder="your@email.com"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium mb-2">Message</label>
-              <textarea
-                rows={4}
-                required
-                value={formData.message}
-                onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                placeholder="Tell us what's on your mind..."
-              />
-            </div>
-
-            <button
-              type="submit"
-              disabled={formStatus === 'sending'}
-              className="w-full px-6 py-3 text-white rounded-md font-medium disabled:opacity-50"
-              style={{ background: 'linear-gradient(to right, #16a34a, #4ade80)' }}
-            >
-              {formStatus === 'sending' ? 'Sending...' : 'Send Message'}
-            </button>
-          </form>
-
-          <div className="mt-8 text-center text-gray-600">
-            <p>📧 nicanteenllc@gmail.com</p>
-            <p className="mt-2">💬 We typically respond within 24 hours</p>
-          </div>
+            </form>
+          </Reveal>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="bg-black text-white py-12 px-4">
-        <div className="container mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <div>
-              <h3 className="text-2xl font-bold mb-4" style={{ color: '#4ade80' }}>Nicanteen</h3>
-              <p className="text-gray-400 text-sm">
-                The ultimate carrier for your nicotine pouches. Discreet, attractive, and pocket-friendly.
-              </p>
-            </div>
-
-            <div>
-              <h4 className="font-semibold mb-4">Quick Links</h4>
-              <ul className="space-y-2 text-sm text-gray-400">
-                <li><a href="#video" className="hover:text-green-400">Watch Video</a></li>
-                <li><a href="#features" className="hover:text-green-400">Features</a></li>
-                <li><a href="#product" className="hover:text-green-400">Product</a></li>
-                <li><a href="#about" className="hover:text-green-400">About</a></li>
-                <li><a href="#contact" className="hover:text-green-400">Contact</a></li>
-              </ul>
-            </div>
-
-            <div>
-              <h4 className="font-semibold mb-4">Support</h4>
-              <ul className="space-y-2 text-sm text-gray-400">
-                <li><a href="#" className="hover:text-green-400">Shipping Info</a></li>
-                <li><a href="#" className="hover:text-green-400">Returns</a></li>
-                <li><a href="#" className="hover:text-green-400">FAQ</a></li>
-                <li><a href="#" className="hover:text-green-400">Privacy Policy</a></li>
-              </ul>
-            </div>
-
-            <div>
-              <h4 className="font-semibold mb-4">Get in Touch</h4>
-              <p className="text-sm text-gray-400 mb-4">
-                Have questions? We&apos;d love to hear from you.
-              </p>
-              <a href="mailto:nicanteenllc@gmail.com" className="text-green-400 hover:underline text-sm">
-                nicanteenllc@gmail.com
-              </a>
-              <br />
-              <a href="#contact" className="text-green-400 hover:underline text-sm mt-2 inline-block">
-                Contact Form →
-              </a>
-            </div>
-          </div>
-
-          <div className="border-t border-gray-800 mt-8 pt-8 text-center text-sm text-gray-400">
-            <p>&copy; 2025 Nicanteen. All rights reserved.</p>
-          </div>
+      <footer className="border-t border-white/10 px-6 py-14">
+        <div className="mx-auto flex max-w-6xl flex-col items-center gap-6 text-center md:flex-row md:justify-between md:text-left">
+          <div className="text-sm font-semibold uppercase tracking-[0.4em]">Nicanteen</div>
+          <nav className="flex flex-wrap justify-center gap-6 text-xs uppercase tracking-widest text-neutral-400">
+            <a href="#problem" className="hover:text-white">The Problem</a>
+            <a href="#object" className="hover:text-white">The Object</a>
+            <a href="#spec" className="hover:text-white">Spec</a>
+            <a href="#contact" className="hover:text-white">Contact</a>
+          </nav>
+          <a href="mailto:nicanteenllc@gmail.com" className="text-xs text-neutral-400 hover:text-white">
+            nicanteenllc@gmail.com
+          </a>
         </div>
+        <p className="mt-8 text-center text-[11px] text-neutral-600">
+          © {new Date().getFullYear()} Nicanteen. All rights reserved.
+        </p>
       </footer>
     </div>
-  );
+  )
 }
